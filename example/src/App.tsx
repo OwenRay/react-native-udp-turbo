@@ -17,7 +17,7 @@ export default function App() {
   const receivePing = useCallback(() => {
     UdpTurbo.receive(idPing)
       .then((message) => {
-        console.log('received message', message);
+        console.log('ping received message', message);
         setMessages((messages) => [
           ...messages,
           Buffer.from(message, 'base64').toString('ascii'),
@@ -29,7 +29,7 @@ export default function App() {
   const receivePong = useCallback(() => {
     UdpTurbo.receive(idPong)
       .then((message) => {
-        console.log('received message', message);
+        console.log('pong received message', message);
         setMessages((messages) => [
           ...messages,
           Buffer.from(message, 'base64').toString('ascii'),

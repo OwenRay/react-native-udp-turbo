@@ -126,9 +126,9 @@ public final class UdpSocketClient {
     }
 
     public String receive() throws IOException {
-        byte[] buf = new byte[1024];
+        byte[] buf = new byte[67000];
         DatagramPacket packet = new DatagramPacket(buf, buf.length);
         mSocket.receive(packet);
-        return Base64.encodeToString(buf, Base64.NO_WRAP);
+        return Base64.encodeToString(buf, 0, packet.getLength(), Base64.NO_WRAP);
     }
 }
