@@ -18,25 +18,25 @@ export default function App() {
     UdpTurbo.receive(idPing)
       .then((message) => {
         console.log('ping received message', message);
-        setMessages((messages) => [
-          ...messages,
+        setMessages((currentMessages) => [
+          ...currentMessages,
           Buffer.from(message, 'base64').toString('ascii'),
         ]);
       })
       .finally(receivePing);
-  }, [setMessages]);
+  }, [setMessages, idPing]);
 
   const receivePong = useCallback(() => {
     UdpTurbo.receive(idPong)
       .then((message) => {
         console.log('pong received message', message);
-        setMessages((messages) => [
-          ...messages,
+        setMessages((currentMessages) => [
+          ...currentMessages,
           Buffer.from(message, 'base64').toString('ascii'),
         ]);
       })
       .finally(receivePong);
-  }, [setMessages]);
+  }, [setMessages, idPong]);
 
   useEffect(() => {
     console.log('bind addresses');
@@ -48,7 +48,7 @@ export default function App() {
       .catch(console.error);
     receivePing();
     receivePong();
-  }, [idPing, idPong]);
+  }, [idPing, idPong, receivePing, receivePong]);
 
   return (
     <View style={styles.container}>
