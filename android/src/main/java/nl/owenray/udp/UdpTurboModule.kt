@@ -106,8 +106,24 @@ class UdpTurboModule(reactContext: ReactApplicationContext?) : NativeUdpTurboSpe
         }
     }
 
+    override fun reset(promise: Promise?) {
+        try {
+            for (client in mClients) {
+                if (mMulticastLock != null && mMulticastLock.isHeld() && client.isMulticast()) {
+                    mMulticastLock.release()
+                }
+                client.close()
+            }
+            mClients.clear()
+            Log.v("UdpTurboModule", "Reset: All clients removed and sockets closed")
+            promise?.resolve(null)
+        } catch (e: Exception) {
+            Log.e("UdpTurboModule", "Reset error: ${e.message}")
+            promise?.reject(e)
+        }
+    }
+
     companion object {
         const val NAME = "UdpTurbo"
     }
 }
-

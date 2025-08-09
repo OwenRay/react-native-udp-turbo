@@ -29,6 +29,9 @@ export interface Spec extends TurboModule {
   // Multicast operations
   addMembership(id: number, multicastAddress: string): Promise<void>;
   dropMembership(id: number, multicastAddress: string): Promise<void>;
+
+  // Module reset (for development mode)
+  reset(): Promise<void>;
 }
 
 export default TurboModuleRegistry.getEnforcing<Spec>('UdpTurbo');

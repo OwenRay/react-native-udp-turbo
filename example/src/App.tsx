@@ -3,6 +3,8 @@ import UdpTurbo from 'react-native-udp-turbo';
 import { Buffer } from 'buffer';
 import { useCallback, useEffect, useMemo, useState } from 'react';
 
+void UdpTurbo.reset();
+
 const PING_MESSAGE = Buffer.from('ping', 'ascii').toString('base64');
 const PONG_MESSAGE = Buffer.from('pong', 'ascii').toString('base64');
 const PING_PORT = 1235;
