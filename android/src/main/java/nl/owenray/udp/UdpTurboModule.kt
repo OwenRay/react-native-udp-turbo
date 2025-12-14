@@ -6,16 +6,19 @@ import com.facebook.react.bridge.Callback
 import com.facebook.react.bridge.Promise
 import com.facebook.react.bridge.ReactApplicationContext
 import com.facebook.react.bridge.ReadableMap
+import android.content.Context
+
 
 class UdpTurboModule(reactContext: ReactApplicationContext?) : NativeUdpTurboSpec(reactContext) {
     private val mClients = ArrayList<UdpSocketClient>()
-    private val mMulticastLock: WifiManager.MulticastLock? = null
+    private val wifi = reactApplicationContext.getSystemService(Context.WIFI_SERVICE) as WifiManager
+    private val mMulticastLock = wifi.createMulticastLock("udp-lock").apply { setReferenceCounted(true) }
 
 
     override fun createSocket(options: ReadableMap): Double {
         val client = UdpSocketClient();
         mClients.add(client)
-        Log.v("createSocket", "client size: " + mClients.size);
+        Log.v("UdpTurboModule", "create socket, client size: " + mClients.size);
         return mClients.lastIndexOf(client).toDouble()
     }
 
@@ -51,20 +54,18 @@ class UdpTurboModule(reactContext: ReactApplicationContext?) : NativeUdpTurboSpe
         address: String?,
         promise: Promise?
     ) {
-        Log.v("QQQ", "send: " + id + " " + base64String + " " + port + " " + address)
         try {
             val client: UdpSocketClient = mClients.get(id.toInt())
             client.send(base64String, port.toInt(), address)
-            Log.v("QQQ", "send done")
+            Log.v("UdpTurboModule", "send done")
             promise?.resolve(null)
         } catch (e: Exception) {
-            Log.v("QQQ", "send error")
+            Log.v("UdpTurboModule", "send error")
             promise?.reject(e)
         }
     }
 
     override fun receive(id: Double, promise: Promise?) {
-        Log.v("QQQ", "receive: " + id)
         Thread {
             try {
                 val client: UdpSocketClient = mClients.get(id.toInt())
@@ -79,6 +80,7 @@ class UdpTurboModule(reactContext: ReactApplicationContext?) : NativeUdpTurboSpe
     override fun setBroadcast(id: Double, flag: Boolean, Promise: Promise?) {
         try {
             val client: UdpSocketClient = mClients.get(id.toInt())
+            mMulticastLock.acquire()
             client.setBroadcast(flag)
             Promise?.resolve(null)
         } catch (e: Exception) {
