@@ -1,6 +1,6 @@
 {
   "name": "react-native-udp-turbo",
-  "version": "0.1.2",
+  "version": "0.1.3",
   "description": "Send / receive udp packets in React Native, for now only supports android",
   "main": "./lib/module/index.js",
   "types": "./lib/typescript/src/index.d.ts",
